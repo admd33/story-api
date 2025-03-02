@@ -1,15 +1,36 @@
+import os
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
-# Load Story Generator from Hugging Face
-story_repo_name = "abdalraheemdmd/story-api"  # Change this to your actual repo
-story_tokenizer = GPT2Tokenizer.from_pretrained(story_repo_name)
-story_model = GPT2LMHeadModel.from_pretrained(story_repo_name)
+# Define local cache paths
+cache_dir = "/app/huggingface_models"
+os.makedirs(cache_dir, exist_ok=True)
 
-# Load Question Generator from Hugging Face
-question_repo_name = "abdalraheemdmd/question-gene"  # Change this to your actual repo
-question_tokenizer = GPT2Tokenizer.from_pretrained(question_repo_name)
-question_model = GPT2LMHeadModel.from_pretrained(question_repo_name)
+# Define Hugging Face model names
+story_repo_name = "abdalraheemdmd/story-api"
+question_repo_name = "abdalraheemdmd/question-gene"
+
+# Load Story Generation Model (Use local cache if available)
+story_model_path = os.path.join(cache_dir, "story-model")
+if not os.path.exists(story_model_path):
+    print("Downloading story model...")
+    story_tokenizer = GPT2Tokenizer.from_pretrained(story_repo_name, cache_dir=story_model_path)
+    story_model = GPT2LMHeadModel.from_pretrained(story_repo_name, cache_dir=story_model_path)
+else:
+    print("Loading cached story model...")
+    story_tokenizer = GPT2Tokenizer.from_pretrained(story_model_path)
+    story_model = GPT2LMHeadModel.from_pretrained(story_model_path)
+
+# Load Question Generation Model (Use local cache if available)
+question_model_path = os.path.join(cache_dir, "question-model")
+if not os.path.exists(question_model_path):
+    print("Downloading question model...")
+    question_tokenizer = GPT2Tokenizer.from_pretrained(question_repo_name, cache_dir=question_model_path)
+    question_model = GPT2LMHeadModel.from_pretrained(question_repo_name, cache_dir=question_model_path)
+else:
+    print("Loading cached question model...")
+    question_tokenizer = GPT2Tokenizer.from_pretrained(question_model_path)
+    question_model = GPT2LMHeadModel.from_pretrained(question_model_path)
 
 def generate_story(theme, reading_level, max_length=700, temperature=0.7):
     """Generates a story based on theme and reading level."""
