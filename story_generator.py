@@ -2,8 +2,8 @@ import os
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
-# Define local cache paths
-cache_dir = "/app/huggingface_models"
+# ✅ Use /tmp instead of /app (Render allows writing here)
+cache_dir = "/tmp/huggingface_models"
 os.makedirs(cache_dir, exist_ok=True)
 
 # Define Hugging Face model names
