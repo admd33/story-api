@@ -3,3 +3,4 @@ uvicorn
 diffusers
 torch
 transformers
+pillow
